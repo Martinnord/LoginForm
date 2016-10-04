@@ -3,12 +3,23 @@ $(document).ready(function(){
 //Solution: Hide and show them at appropriate times
 var $password = $("#password");
 var $confirmPassword = $("#confirm_password");
-
 //Hide hints
 $("form span").hide();
 
+function isPasswordValid() {
+  return $password.val().length > 8
+}
+
+function passwordMatching() {
+  return $password.val() === $confirmPassword.val();
+}
+
+function canSubmit() {
+  return isPasswordValid() && passwordMatching();
+}
+
 function passwordEvent() {
-  if($password.val().length > 8) {
+  if(isPasswordValid()) {
     //Hide hint if valid
     $password.next().hide();
   } else {
@@ -28,11 +39,16 @@ function confirmPasswordEvent() {
   }
 }
 
+function enableSubmitEvent() {
+  $("#submit").prop("disabled", !canSubmit());
+}
+
 //When event happens on password input
-$("#password").focus(passwordEvent).keyup(passwordEvent);
+$password.focus(passwordEvent).keyup(passwordEvent).keyup(confirmPasswordEvent).keyup(enableSubmitEvent);
   //Find out if password is valid
 
 //When event happens on confirmation input
-$("#confirm_password").focus(confirmPasswordEvent).keyup(confirmPasswordEvent);
+$confirmPassword.focus(confirmPasswordEvent).keyup(confirmPasswordEvent).keyup(enableSubmitEvent);
 
+enableSubmitEvent();
 });
